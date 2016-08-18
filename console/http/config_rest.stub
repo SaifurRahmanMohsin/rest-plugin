@@ -1,0 +1,10 @@
+# ===================================
+#  Rest Behavior Config
+# ===================================
+
+# Allowed Rest Actions
+allowedActions:
+  - index
+
+# Model Class name
+modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_model}}
