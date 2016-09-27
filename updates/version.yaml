@@ -1,1 +1,2 @@
 1.0.1: First version of RESTful
+1.0.2: !!! Contains breaking changes and adds default behaviour for index, store, show, update, destroy verbs.

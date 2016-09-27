@@ -2,7 +2,12 @@
 
 use Db;
 use Str;
+use Lang;
+use Request;
+use Exception;
+use ValidationException;
 use Backend\Classes\ControllerBehavior;
+use October\Rain\Database\ModelException;
 
 /**
  * Rest Controller Behavior
@@ -19,6 +24,8 @@ use Backend\Classes\ControllerBehavior;
  */
 class RestController extends ControllerBehavior
 {
+    use \Backend\Traits\FormModelSaver;
+
     /**
      * @var Model The child controller that implements the behavior.
      */
@@ -65,12 +72,170 @@ class RestController extends ControllerBehavior
           $this->prefix = $this->config->prefix;
     }
 
+    /**
+     * Creates a new instance of the model. This logic can be changed
+     * by overriding it in the rest controller.
+     * @return Model
+     */
+    public function createModelObject()
+    {
+        return $this->createModel();
+    }
+
+    /**
+     * Display the records.
+     *
+     * @return Response
+     */
     public function index()
     {
-        $model = $this->createModel();
-        return response()->json([
-            'response' => $model->all(),
-        ], 200);
+        $options = $this->config->allowedActions['index'];
+        $page = Request::input('page', 1);
+
+        /*
+         * Default options
+         */
+        extract(array_merge([
+            'page'       => $page,
+            'pageSize'    => 5
+        ], $options));
+
+        try {
+            $model = $this->controller->createModelObject();
+            $model = $this->controller->extendModel($model) ?: $model;
+
+            return response()->json($model->paginate($pageSize, $page), 200);
+        }
+        catch (Exception $ex) {
+            return response()->json($ex -> getMessage(), 400);
+        }
+    }
+
+    /**
+     * Store a newly created record using post data.
+     *
+     * @return Response
+     */
+    public function store()
+    {
+        $data = post();
+
+        try {
+            $model = $this->controller->createModelObject();
+            $model = $this->controller->extendModel($model) ?: $model;
+
+            $modelsToSave = $this->prepareModelsToSave($model, $data);
+            foreach ($modelsToSave as $modelToSave) {
+                $modelToSave->save();
+            }
+
+            return response()->json($model, 200);
+        }
+        catch(ModelException $ex) {
+            return response()->json($ex -> getMessage(), 400);
+        }
+        catch (Exception $ex) {
+            return response()->json($ex -> getMessage(), 400);
+        }
+    }
+
+    /**
+     * Display the specified record.
+     *
+     * @param  int  $recordId
+     * @return Response
+     */
+    public function show($recordId)
+    {
+        try {
+            $model = $this->controller->findModelObject($recordId);
+
+            return response()->json($model, 200);
+        }
+        catch(ModelException $ex) {
+            return response()->json($ex -> getMessage(), 400);
+        }
+        catch (Exception $ex) {
+            return response()->json($ex -> getMessage(), 400);
+        }
+    }
+
+    /**
+     * Update the specified record in using post data.
+     *
+     * @param  int  $recordId
+     * @return Response
+     */
+    public function update($recordId)
+    {
+        $data = Request::all();
+
+        try {
+            $model = $this->controller->findModelObject($recordId);
+
+            $modelsToSave = $this->prepareModelsToSave($model, $data);
+            foreach ($modelsToSave as $modelToSave) {
+                $modelToSave->save();
+            }
+
+            return response()->json($model, 200);
+        }
+        catch(ModelException $ex) {
+            return response()->json($ex -> getMessage(), 400);
+        }
+        catch (Exception $ex) {
+            return response()->json($ex -> getMessage(), 400);
+        }
+    }
+
+    /**
+     * Remove the specified record.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroy($recordId)
+    {
+        try {
+            $model = $this->controller->findModelObject($recordId);
+            $model -> delete();
+            return response()->json($model, 200);
+        }
+        catch(ModelException $ex) {
+            return response()->json($ex -> getMessage(), 400);
+        }
+        catch (Exception $ex) {
+            return response()->json($ex -> getMessage(), 400);
+        }
+    }
+
+    /**
+     * Finds a Model record by its primary identifier, used by show, update actions.
+     * This logic can be changed by overriding it in the rest controller.
+     * @param string $recordId
+     * @return Model
+     */
+    public function findModelObject($recordId)
+    {
+        if (!strlen($recordId)) {
+            throw new Exception('Record ID has not been specified.');
+        }
+
+        $model = $this->controller->createModelObject();
+
+        /*
+         * Prepare query and find model record
+         */
+        $query = $model->newQuery();
+        $result = $query->find($recordId);
+
+        if (!$result) {
+            throw new Exception(sprintf('Record with an ID of %u could not be found.', $recordId));
+        }
+
+        $result = $this->controller->extendModel($result) ?: $result;
+
+        return $result;
     }
 
     /**
@@ -87,13 +252,13 @@ class RestController extends ControllerBehavior
     public static function getAfterFilters() {return [];}
     public static function getBeforeFilters() {return [];}
     public static function getMiddleware() {return [];}
-    public function callAction($method, $parameters=false) {
+    public function callAction($method, $parameters = false) {
       $action = Str::camel($this -> prefix . ' ' . $method);
-      if (method_exists($this->controller, $action) && is_callable(array($this->controller, $action)) && in_array($method, $this->config->allowedActions))
+      if (method_exists($this->controller, $action) && is_callable(array($this->controller, $action)) && array_key_exists($method, $this->config->allowedActions))
       {
         return call_user_func_array(array($this->controller, $action), $parameters);
       }
-      else if (method_exists($this, $action) && is_callable(array($this, $action)) && in_array($method, $this->config->allowedActions))
+      else if (method_exists($this, $action) && is_callable(array($this, $action)) && array_key_exists($method, $this->config->allowedActions))
       {
         return call_user_func_array(array($this, $action), $parameters);
       }
@@ -103,5 +268,15 @@ class RestController extends ControllerBehavior
             'response' => 'Not Found',
         ], 404);
       }
+    }
+
+    /**
+     * Extend supplied model, the model can
+     * be altered by overriding it in the controller.
+     * @param Model $model
+     * @return Model
+     */
+    public function extendModel($model)
+    {
     }
 }
