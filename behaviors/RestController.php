@@ -90,6 +90,7 @@ class RestController extends ControllerBehavior
     public function index()
     {
         $options = $this->config->allowedActions['index'];
+        $relations =  isset($this->config->allowedActions['index']['relations']) ? $this->config->allowedActions['index']['relations'] : [];
         $page = Request::input('page', 1);
 
         /*
@@ -104,7 +105,7 @@ class RestController extends ControllerBehavior
             $model = $this->controller->createModelObject();
             $model = $this->controller->extendModel($model) ?: $model;
 
-            return response()->json($model->paginate($pageSize, $page), 200);
+            return response()->json($model->with($relations)->paginate($pageSize, $page), 200);
         }
         catch (Exception $ex) {
             return response()->json($ex -> getMessage(), 400);
@@ -147,8 +148,14 @@ class RestController extends ControllerBehavior
      */
     public function show($recordId)
     {
+        $relations =  isset($this->config->allowedActions['show']['relations']) ? $this->config->allowedActions['show']['relations'] : [];
+
         try {
             $model = $this->controller->findModelObject($recordId);
+
+            // Get relations too
+            foreach($relations as $relation)
+              $model -> {$relation};
 
             return response()->json($model, 200);
         }
