@@ -119,7 +119,7 @@ class RestController extends ControllerBehavior
      */
     public function store()
     {
-        $data = post();
+        $data = Request::all();
 
         try {
             $model = $this->controller->createModelObject();
