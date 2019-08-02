@@ -105,7 +105,7 @@ class RestController extends ControllerBehavior
             $model = $this->controller->createModelObject();
             $model = $this->controller->extendModel($model) ?: $model;
 
-            return response()->json($model->with($relations)->paginate($pageSize, $page), 200);
+            return response()->json($this->controller->getPaginator($model->with($relations), $pageSize, $page), 200);
         }
         catch (Exception $ex) {
             return response()->json($ex -> getMessage(), 400);
@@ -285,5 +285,10 @@ class RestController extends ControllerBehavior
      */
     public function extendModel($model)
     {
+    }
+
+    public function getPaginator($model, $pageSize, $page)
+    {
+        return $model->paginate($pageSize, $page);
     }
 }
