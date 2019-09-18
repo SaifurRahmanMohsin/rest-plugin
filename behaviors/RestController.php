@@ -68,8 +68,9 @@ class RestController extends ControllerBehavior
         $this->config = $this->makeConfig($controller->restConfig, $this->requiredConfig);
         $this->config->modelClass = Str::normalizeClassName($this->config->modelClass);
 
-        if(isset($this->config->prefix))
-          $this->prefix = $this->config->prefix;
+        if (isset($this->config->prefix)) {
+            $this->prefix = $this->config->prefix;
+        }
     }
 
     /**
@@ -132,7 +133,7 @@ class RestController extends ControllerBehavior
 
             return response()->json($model, 200);
         }
-        catch(ModelException $ex) {
+        catch (ModelException $ex) {
             return response()->json($ex -> getMessage(), 400);
         }
         catch (Exception $ex) {
@@ -154,12 +155,13 @@ class RestController extends ControllerBehavior
             $model = $this->controller->findModelObject($recordId);
 
             // Get relations too
-            foreach($relations as $relation)
-              $model -> {$relation};
+            foreach ($relations as $relation) {
+                $model->{$relation};
+            }
 
             return response()->json($model, 200);
         }
-        catch(ModelException $ex) {
+        catch (ModelException $ex) {
             return response()->json($ex -> getMessage(), 400);
         }
         catch (Exception $ex) {
@@ -187,7 +189,7 @@ class RestController extends ControllerBehavior
 
             return response()->json($model, 200);
         }
-        catch(ModelException $ex) {
+        catch (ModelException $ex) {
             return response()->json($ex -> getMessage(), 400);
         }
         catch (Exception $ex) {
@@ -208,7 +210,7 @@ class RestController extends ControllerBehavior
             $model -> delete();
             return response()->json($model, 200);
         }
-        catch(ModelException $ex) {
+        catch (ModelException $ex) {
             return response()->json($ex -> getMessage(), 400);
         }
         catch (Exception $ex) {
@@ -253,28 +255,6 @@ class RestController extends ControllerBehavior
     {
         $class = $this->config->modelClass;
         return new $class();
-    }
-
-    /* Functions to allow RESTful actions */
-    public static function getAfterFilters() {return [];}
-    public static function getBeforeFilters() {return [];}
-    public static function getMiddleware() {return [];}
-    public function callAction($method, $parameters = false) {
-      $action = Str::camel($this -> prefix . ' ' . $method);
-      if (method_exists($this->controller, $action) && is_callable(array($this->controller, $action)) && array_key_exists($method, $this->config->allowedActions))
-      {
-        return call_user_func_array(array($this->controller, $action), $parameters);
-      }
-      else if (method_exists($this, $action) && is_callable(array($this, $action)) && array_key_exists($method, $this->config->allowedActions))
-      {
-        return call_user_func_array(array($this, $action), $parameters);
-      }
-      else
-      {
-        return response()->json([
-            'response' => 'Not Found',
-        ], 404);
-      }
     }
 
     /**

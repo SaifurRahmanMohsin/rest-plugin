@@ -2,6 +2,7 @@
 
 use Backend;
 use System\Classes\PluginBase;
+use Mohsin\Rest\Classes\ApiManager;
 
 /**
  * Rest Plugin Information File
@@ -29,4 +30,9 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('create.restcontroller', 'Mohsin\Rest\Console\CreateRestController');
     }
 
+    public function boot()
+    {
+        // Register all the available API nodes
+        $apiManager = ApiManager::instance();
+    }
 }
