@@ -3,6 +3,7 @@
 use Backend;
 use System\Classes\PluginBase;
 use Mohsin\Rest\Classes\ApiManager;
+use System\Classes\SettingsManager;
 
 /**
  * Rest Plugin Information File
@@ -18,9 +19,9 @@ class Plugin extends PluginBase
     public function pluginDetails()
     {
         return [
-            'name'        => 'RESTful',
-            'description' => 'Generate RESTful controllers',
-            'author'      => 'Mohsin',
+            'name'        => 'mohsin.rest::lang.plugin.name',
+            'description' => 'mohsin.rest::lang.plugin.description',
+            'author'      => 'Saifur Rahman Mohsin',
             'icon'        => 'icon-cloud'
         ];
     }
@@ -34,5 +35,25 @@ class Plugin extends PluginBase
     {
         // Register all the available API nodes
         $apiManager = ApiManager::instance();
+    }
+
+    /**
+     * Registers settings controller for this plugin.
+     *
+     * @return array
+     */
+    public function registerSettings()
+    {
+        return [
+            'settings' => [
+                'label'       => 'mohsin.rest::lang.settings.name',
+                'description' => 'mohsin.rest::lang.settings.description',
+                'category'    => SettingsManager::CATEGORY_SYSTEM,
+                'icon'        => 'icon-cloud',
+                'class'       => 'Mohsin\Rest\Models\Settings',
+                'order'       => 507,
+                'permissions' => ['mohsin.rest.access_settings'],
+            ]
+        ];
     }
 }

@@ -1,6 +1,7 @@
 <?php namespace Mohsin\Rest\Classes;
 
 use ApplicationException;
+use Mohsin\Rest\Models\Settings;
 use System\Classes\PluginManager;
 
 /**
@@ -32,7 +33,7 @@ class ApiManager
      * @var API prefix
      * TODO: Replace with customizable value.
      */
-    protected $prefix = 'api/v1/';
+    protected $prefix;
 
     /**
      * Initialize this singleton.
@@ -41,6 +42,8 @@ class ApiManager
     {
         $this->pluginManager = PluginManager::instance();
         $this->router = app()->router;
+
+        $this->prefix = Settings::get('prefix', 'api/v1/');
 
         if (empty($nodes)) {
             $this->loadApiNodes();

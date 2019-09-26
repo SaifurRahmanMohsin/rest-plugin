@@ -1,0 +1,9 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    prefix:
+        label: mohsin.rest::lang.settings.prefix_label
+        commentAbove: mohsin.rest::lang.settings.prefix_comment
+        default: 'api/v1/'
