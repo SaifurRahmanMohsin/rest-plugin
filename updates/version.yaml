@@ -2,3 +2,7 @@
 1.0.2: !!! Contains breaking changes and adds default behaviour for index, store, show, update, destroy verbs.
 1.0.3: Added support for querying relations for the index and show verbs.
 1.0.4: !!! Preparing to move to a better API management system
+1.0.5:
+  - Introducing the API Manager
+  - Created a Nodes Table
+  - create_nodes_table.php

@@ -50,7 +50,7 @@ class Plugin extends PluginBase
                 'description' => 'mohsin.rest::lang.settings.description',
                 'category'    => SettingsManager::CATEGORY_SYSTEM,
                 'icon'        => 'icon-cloud',
-                'class'       => 'Mohsin\Rest\Models\Settings',
+                'url'         => Backend::url('mohsin/rest/settings'),
                 'order'       => 507,
                 'permissions' => ['mohsin.rest.access_settings'],
             ]
