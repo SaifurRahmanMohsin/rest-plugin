@@ -6,3 +6,6 @@
   - Introducing the API Manager
   - Created a Nodes Table
   - create_nodes_table.php
+1.0.6:
+  - Add Extras Field To Nodes Table
+  - add_extras_field_to_nodes_table.php

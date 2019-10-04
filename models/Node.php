@@ -31,6 +31,29 @@ class Node extends Model
         'updated_at'
     ];
 
+    /**
+     * @var array Jsonable fields
+     */
+    protected $jsonable = [
+        'extras'
+    ];
+
+    public function addExtra($key, $value)
+    {
+        $extras = (array) $this->extras ? [] : $this->extras;
+        $extras[$key] = $value;
+        $this->extras = $extras;
+        $this->save();
+    }
+
+    public function removeExtra($key)
+    {
+        $extras = (array) $this->extras ? [] : $this->extras;
+        unset($extras[$key]);
+        $this->extras = $extras;
+        $this->save();
+    }
+
     public function enable()
     {
         $this->is_disabled = false;
