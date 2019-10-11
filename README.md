@@ -26,7 +26,7 @@ class Categories extends \Backend\Classes\Controller
 
 ### API configuration ###
 
-You can create as many RESTful controllers as you like. However, these won't work unless you expose them to the RESTful plugin so that it registers them with OctoberCMS. You can do this by defining a function like this in your Plugin.php
+You can create as many RESTful controllers as you like. However, these won't work unless you register them with OctoberCMS. You can do this by defining a registerNodes method in your Plugin.php like this:
 ```
 /**
  * Registers API nodes exposed by this plugin.

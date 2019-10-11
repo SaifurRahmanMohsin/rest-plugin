@@ -10,7 +10,6 @@ use System\Classes\SettingsManager;
  */
 class Plugin extends PluginBase
 {
-
     /**
      * Returns information about this plugin.
      *

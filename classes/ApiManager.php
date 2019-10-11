@@ -1,5 +1,6 @@
 <?php namespace Mohsin\Rest\Classes;
 
+use Schema;
 use ApplicationException;
 use Mohsin\Rest\Models\Node;
 use Mohsin\Rest\Models\Setting;
@@ -14,6 +15,7 @@ use System\Classes\PluginManager;
 class ApiManager
 {
     use \October\Rain\Support\Traits\Singleton;
+    use \October\Rain\Extension\ExtendableTrait;
 
     /**
      * @var collection Cache of the registered API nodes.
@@ -45,6 +47,10 @@ class ApiManager
         $this->router = app()->router;
 
         $this->prefix = Setting::get('prefix', 'api/v1/');
+
+        if (!Schema::hasTable('mohsin_rest_nodes')) {
+            return;
+        }
 
         $this->discoverNewNodes();
         $this->registerApiNodes();
@@ -124,30 +130,38 @@ class ApiManager
         $controller = explode('@', $config->controller);
         $path = $this->prefix . $path;
         $options = (array) $config;
+        $options['middleware'] = 'auth:api';
 
         if (count($controller) == 1) {
+            $controller = $controller[0];
             $this->router->apiResource($path, $controller, $options);
         } else {
+            $options['uses'] = $config->controller;
             switch ($config->action) {
                 case 'index':
                 case 'create':
                 case 'show':
                 case 'edit':
-                    $this->router->get($path, $config->controller);
+                    $this->router->get($path, $options);
                     break;
                 case 'store':
-                    $this->router->post($path, $config->controller);
+                    $this->router->post($path, $options);
                     break;
                 case 'update':
-                    $this->router->put($path, $config->controller);
-                    $this->router->patch($path, $config->controller);
+                    $this->router->put($path, $options);
+                    $this->router->patch($path, $options);
                     break;
                 case 'destroy':
-                    $this->router->delete($path, $config->controller);
+                    $this->router->delete($path, $options);
                     break;
                 default:
                     throw new ApplicationException(sprintf('Invalid action is route %s', $path));
             }
         }
+    }
+
+    public function getPrefix()
+    {
+        return $this->prefix;
     }
 }
