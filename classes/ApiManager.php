@@ -130,7 +130,6 @@ class ApiManager
         $controller = explode('@', $config->controller);
         $path = $this->prefix . $path;
         $options = (array) $config;
-        $options['middleware'] = 'auth:api';
 
         if (count($controller) == 1) {
             $controller = $controller[0];
