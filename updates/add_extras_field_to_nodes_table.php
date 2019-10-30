@@ -10,7 +10,7 @@ class AddExtrasFieldToNodesTable extends Migration
     {
         if (Schema::hasTable('mohsin_rest_nodes')) {
             Schema::table('mohsin_rest_nodes', function (Blueprint $table) {
-                $table->json('extras')->after('is_disabled')->default('{}');
+                $table->string('extras')->after('is_disabled')->default('{}');
             });
         }
     }

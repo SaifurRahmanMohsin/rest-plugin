@@ -154,7 +154,7 @@ class ApiManager
                     $this->router->delete($path, $options);
                     break;
                 default:
-                    throw new ApplicationException(sprintf('Invalid action is route %s', $path));
+                    throw new ApplicationException(sprintf('Invalid action in route %s', $path));
             }
         }
     }
