@@ -3,7 +3,7 @@
 use Backend\Classes\Controller;
 
 /**
- * {{title_name}} Back-end Controller
+ * {{title_name}} RESTful Controller
  */
 class {{studly_name}} extends Controller
 {

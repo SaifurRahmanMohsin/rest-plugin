@@ -24,6 +24,7 @@ use October\Rain\Database\ModelException;
  */
 class RestController extends ControllerBehavior
 {
+    use \System\Traits\EventEmitter;
     use \Backend\Traits\FormModelSaver;
 
     /**
@@ -60,7 +61,7 @@ class RestController extends ControllerBehavior
     public function __construct($controller)
     {
         parent::__construct($controller);
-        $this -> controller = $controller;
+        $this->controller = $controller;
 
         /*
          * Build configuration
@@ -71,6 +72,9 @@ class RestController extends ControllerBehavior
         if (isset($this->config->prefix)) {
             $this->prefix = $this->config->prefix;
         }
+
+        // Extension
+        $this->fireSystemEvent('http.request');
     }
 
     /**
@@ -90,9 +94,11 @@ class RestController extends ControllerBehavior
      */
     public function index()
     {
+        $data = Request::all();
+
         $options = $this->config->allowedActions['index'];
         $relations =  isset($this->config->allowedActions['index']['relations']) ? $this->config->allowedActions['index']['relations'] : [];
-        $page = Request::input('page', 1);
+        $page = array_get($data, 'page', 1);
 
         /*
          * Default options
