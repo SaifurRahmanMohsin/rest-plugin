@@ -62,6 +62,11 @@ class RestController extends ControllerBehavior
     {
         parent::__construct($controller);
         $this->controller = $controller;
+        $this->controller->middleware(function ($request, $next) {
+            $response = $next($request);
+            $this->fireSystemEvent('http.requestAfter');
+            return $response;
+        });
 
         /*
          * Build configuration
