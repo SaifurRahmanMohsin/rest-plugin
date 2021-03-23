@@ -250,7 +250,7 @@ class RestController extends ControllerBehavior
         $result = $query->find($recordId);
 
         if (!$result) {
-            throw new Exception(sprintf('Record with an ID of %u could not be found.', $recordId));
+            throw new Exception(Lang::get('mohsin.rest::lang.http.record_not_found', ['id' => $recordId]));
         }
 
         $result = $this->controller->extendModel($result) ?: $result;

@@ -3,8 +3,9 @@
 use Lang;
 use Flash;
 use BackendMenu;
-use Backend\Classes\Controller;
+use ApplicationException;
 use Mohsin\Rest\Models\Node;
+use Backend\Classes\Controller;
 use System\Classes\SettingsManager;
 use System\Controllers\Settings as SettingsController;
 
@@ -31,12 +32,17 @@ class Settings extends SettingsController
     public function index()
     {
         parent::index();
+
+        // Form Initialization
         $model = $this->formCreateModelObject();
+        $this->initForm($model);
         $this->update('Mohsin', 'Rest', 'settings');
+
+        // List Initialization
         return $this->asExtension('ListController')->index();
     }
 
-    public function onSave()
+    public function index_onSave()
     {
         return $this->update_onSave('Mohsin', 'Rest', 'settings');
     }

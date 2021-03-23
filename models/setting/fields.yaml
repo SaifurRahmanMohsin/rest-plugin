@@ -7,8 +7,3 @@ fields:
         label: mohsin.rest::lang.settings.prefix_label
         commentAbove: mohsin.rest::lang.settings.prefix_comment
         default: 'api/v1/'
-
-    nodes:
-        label: API Nodes
-        type: partial
-        path: $/mohsin/rest/models/setting/list_nodes.htm

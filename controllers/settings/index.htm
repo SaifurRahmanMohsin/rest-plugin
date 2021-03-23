@@ -1,6 +1,6 @@
 <?php Block::put('breadcrumb') ?>
     <ul>
-        <li><a href="<?= Backend::url('mohsin/rest/settings') ?>">Settings</a></li>
+        <li><a href="<?= Backend::url('mohsin/rest/settings') ?>"><?= e(trans('mohsin.rest::lang.settings.plural')) ?></a></li>
         <li><?= e(trans($this->pageTitle)) ?></li>
     </ul>
 <?php Block::endPut() ?>
@@ -12,9 +12,11 @@
         'data' => 'redirect: 0'
     ]) ?>
 
-        <div style="margin-left: 20px; margin-right:">
+        <div class="m-x">
             <?= $this->formRender() ?>
+            <h4><?= e(trans('mohsin.rest::lang.settings.api_nodes_label')) ?></h4>
         </div>
+
         <?= $this->listRender() ?>
     <?= Form::close() ?>
 
@@ -24,12 +26,12 @@
                 form="apiSettingsForm"
                 onclick="$('#apiSettingsForm').submit()"
                 data-hotkey="ctrl+s, cmd+s"
-                data-load-indicator="Saving Setting..."
+                data-load-indicator="<?= e(trans('backend::lang.form.saving_name', ['name'=>$formRecordName])) ?>"
                 class="btn btn-primary">
-                <u>S</u>ave
+                <?= e(trans('backend::lang.form.save')) ?>
             </button>
             <span class="btn-text">
-                or <a href="<?= Backend::url('system/settings') ?>">Cancel</a>
+                or <a href="<?= Backend::url('system/settings') ?>"><?= e(trans('backend::lang.form.cancel')) ?></a>
             </span>
         </div>
     </div>

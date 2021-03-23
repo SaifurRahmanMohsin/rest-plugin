@@ -8,9 +8,6 @@ list: $/mohsin/rest/models/node/columns.yaml
 # Model Class name
 modelClass: Mohsin\Rest\Models\Node
 
-# List Title
-title: Manage Settings
-
 # Link URL for each record
 recordOnClick: return
 

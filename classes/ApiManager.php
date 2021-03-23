@@ -1,5 +1,6 @@
 <?php namespace Mohsin\Rest\Classes;
 
+use Lang;
 use Schema;
 use ApplicationException;
 use Mohsin\Rest\Models\Node;
@@ -154,7 +155,7 @@ class ApiManager
                     $this->router->delete($path, $options);
                     break;
                 default:
-                    throw new ApplicationException(sprintf('Invalid action in route %s', $path));
+                    throw new ApplicationException(Lang::get('mohsin.rest::lang.http.invalid_action', [ 'path' => $path ]));
             }
         }
     }

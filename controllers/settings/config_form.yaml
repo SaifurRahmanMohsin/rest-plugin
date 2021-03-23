@@ -3,7 +3,7 @@
 # ===================================
 
 # Record name
-name: Setting
+name: mohsin.rest::lang.settings.label
 
 # Model Form Field configuration
 form: $/mohsin/rest/models/setting/fields.yaml

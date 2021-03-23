@@ -12,4 +12,10 @@ class Setting extends Model
     public $settingsCode = 'mohsin_rest_settings';
 
     public $settingsFields = 'fields.yaml';
+
+    protected function getPrefixAttribute($value)
+    {
+        // Ensure it always ends with a slash
+        return rtrim($this->get('prefix'), '/') . '/';
+    }
 }
