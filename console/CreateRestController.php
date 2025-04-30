@@ -38,7 +38,7 @@ class CreateRestController extends GeneratorCommand
      * Prepare variables for stubs.
      * return @array
      */
-    protected function prepareVars()
+    protected function prepareVars(): array
     {
         $pluginCode = $this->argument('plugin');
 
